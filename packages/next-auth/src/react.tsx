@@ -222,17 +222,20 @@ export async function getProviders() {
 export async function signIn(
   provider?: ProviderId,
   options?: SignInOptions<true>,
-  authorizationParams?: SignInAuthorizationParams
+  authorizationParams?: SignInAuthorizationParams,
+  additionalHeaders?: Record<string, string>
 ): Promise<void>
 export async function signIn(
   provider?: ProviderId,
   options?: SignInOptions<false>,
-  authorizationParams?: SignInAuthorizationParams
+  authorizationParams?: SignInAuthorizationParams,
+  additionalHeaders?: Record<string, string>
 ): Promise<SignInResponse>
 export async function signIn<Redirect extends boolean = true>(
   provider?: ProviderId,
   options?: SignInOptions<Redirect>,
-  authorizationParams?: SignInAuthorizationParams
+  authorizationParams?: SignInAuthorizationParams,
+  additionalHeaders?: Record<string, string>
 ): Promise<SignInResponse | void> {
   const { callbackUrl, ...rest } = options ?? {}
   const {
@@ -282,6 +285,7 @@ export async function signIn<Redirect extends boolean = true>(
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         "X-Auth-Return-Redirect": "1",
+        ...additionalHeaders,
       },
       body: new URLSearchParams({
         ...signInParams,
@@ -324,12 +328,17 @@ export async function signIn<Redirect extends boolean = true>(
  * @note This method can only be used from Client Components ("use client" or Pages Router).
  * For Server Actions, use the `signOut` method imported from the `auth` config.
  */
-export async function signOut(options?: SignOutParams<true>): Promise<void>
 export async function signOut(
-  options?: SignOutParams<false>
+  options?: SignOutParams<true>,
+  additionalHeaders?: Record<string, string>
+): Promise<void>
+export async function signOut(
+  options?: SignOutParams<false>,
+  additionalHeaders?: Record<string, string>
 ): Promise<SignOutResponse>
 export async function signOut<R extends boolean = true>(
-  options?: SignOutParams<R>
+  options?: SignOutParams<R>,
+  additionalHeaders?: Record<string, string>
 ): Promise<SignOutResponse | void> {
   const {
     redirect = true,
@@ -343,6 +352,7 @@ export async function signOut<R extends boolean = true>(
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "X-Auth-Return-Redirect": "1",
+      ...additionalHeaders,
     },
     body: new URLSearchParams({ csrfToken, callbackUrl: redirectTo }),
   })
